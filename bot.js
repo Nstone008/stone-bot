@@ -1,6 +1,7 @@
 const { Channel, Intents, Client, Collection } = require('discord.js')
 const dotenv = require('dotenv')
-const fs = require('node:fs')
+const fs = require('node:fs');
+const { Module } = require('node:module');
 const path = require('node:path')
 require('./setup-commands');
 dotenv.config();
@@ -42,7 +43,9 @@ for(const file of commandFiles){
     client.commands.set(command.data.name, command)
 }
 
-//const commandsToCheck = client.commands;
+const commandsToCheck = new Collection(client.commands);
+
+console.log(commandsToCheck, ' MAYBE HERE ');
 
 // Dynamic Command Execution
 client.on('interactionCreate',async (interaction) => {
@@ -63,3 +66,7 @@ client.on('interactionCreate',async (interaction) => {
 })
 
 client.login(process.env.DISCORD_TOKEN);
+
+module.exports = {
+    commandsToCheck
+}

@@ -2,6 +2,7 @@ const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
 const fs = require('node:fs');
 const dotenv = require('dotenv');
+const { Collection } = require('discord.js');
 dotenv.config();
 
 const commands = [];
@@ -36,3 +37,9 @@ const rest = new REST({ version: '9' }).setToken(process.env.DISCORD_TOKEN);
 		console.error(error);
 	}
 })();
+
+const collectionCommands = new Collection(commands)
+
+module.exports = {
+    collectionCommands
+}

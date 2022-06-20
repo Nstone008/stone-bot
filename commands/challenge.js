@@ -11,12 +11,18 @@ const data = new SlashCommandBuilder()
             { name: 'rock', value: 'rock' },
             { name: 'Meme', value: 'gif_meme' },
             { name: 'Movie', value: 'gif_movie' },
-            { name: 'Dad', value: 'dad'})
-            );
+            { name: 'Dad', value: 'dad'},
+            { name: 'Evangelion', value: 'Depression Robot'})
+            )
+          .addUserOption(option => option.setName('target').setDescription('Select a user'));
 
 module.exports = {
     data: data,
     async execute(interaction){
         await interaction.reply('Hi there!');
+
+        // Need to figure out how to find the response
+        // a user submits, I currently have the multiple
+        // options set up. As well as a target player possible.
     }
 }
