@@ -2,7 +2,6 @@ const { Channel, Intents, Client, Collection } = require('discord.js')
 const dotenv = require('dotenv')
 const fs = require('node:fs')
 const path = require('node:path')
-const { token } = require('./config.json')
 require('./setup-commands');
 dotenv.config();
 
@@ -63,4 +62,4 @@ client.on('interactionCreate',async (interaction) => {
     }
 })
 
-client.login(token);
+client.login(process.env.DISCORD_TOKEN);

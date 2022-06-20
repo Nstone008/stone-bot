@@ -1,15 +1,14 @@
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
-const { token } = require('./config.json');
 const fs = require('node:fs');
+const dotenv = require('dotenv');
+dotenv.config();
 
 const commands = [];
 // Gathers all file names
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 
 // Place your client and guild ids here
-const clientId = '983950908767477791';
-const guildId = '876543210987654321';
 
 //Using the file name
 for (const file of commandFiles) {
@@ -19,7 +18,7 @@ for (const file of commandFiles) {
 	commands.push(command.data.toJSON());
 }
 
-const rest = new REST({ version: '9' }).setToken(token);
+const rest = new REST({ version: '9' }).setToken(process.env.DISCORD_TOKEN);
 
 (async () => {
     try {
@@ -27,7 +26,7 @@ const rest = new REST({ version: '9' }).setToken(token);
 
         // REST call to add the commands for the bot
 		await rest.put(
-			Routes.applicationCommands(clientId),
+			Routes.applicationCommands(process.env.APP_ID),
             // The commands to apply
 			{ body: commands },
 		);
