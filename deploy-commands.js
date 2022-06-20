@@ -1,21 +1,19 @@
 const fs = require('node:fs');
 const path = require('node:path');
-const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
-// import { dirname } from './utils.js'
+const { clientId, token} = require('./config.json');
+const { Collection } = require('discord.js');
 
-const commands = [];
+const applicationId = '983950908767477791'
+const guildId = ''
+
+const commands = new Collection();
 const commandsPath = path.join(__dirname, 'commands');
 const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
 
-for(const file of commandFiles){
-    const filePath = path.join(commandsPath,file);
-    const command = require(filePath);
-    commands.push(command.data);
-};
-const rest = new REST({ version: '9' }).setToken(process.env.DISCORD_TOKEN);
 
-rest.put(Routes.applicationCommands(process.env.APP_ID, process.env.GUILD_ID), 
-    { body: commands })
-    .then(() => console.log('Succesfully registered application commands.'))
-    .catch(console.error);
+for(const file of commandFiles){
+    const filePath = path.join(commandsPath, file);
+    const command = require(filePath);
+    commands.set(command.data.name, command)
+}

@@ -1,9 +1,9 @@
-const {Channel, Intents, Client, Collection} = require('discord.js')
+const { Channel, Intents, Client, Collection } = require('discord.js')
 const dotenv = require('dotenv')
 const fs = require('node:fs')
 const path = require('node:path')
-// import { fileURLToPath } from 'node:url';
-// import { dirname } from './utils.js'
+const { token } = require('./config.json')
+require('./setup-commands');
 dotenv.config();
 
 // Store for in-progress games. In production, you'd want to use a DB
@@ -11,38 +11,56 @@ let activeGames = {};
 
 //Creating the client with its options(currently intents)
 const client = new Client({
-    intents: [Intents.FLAGS.GUILDS],
+    intents: [
+        Intents.FLAGS.GUILD_MESSAGES,
+        Intents.FLAGS.GUILDS,
+    ],
 });
 
-client.on('ready', () => {
-    console.log('The bot is ready')
-    console.log(`Logged in as ${client.user.tag}!`)
-});
+// Events
+const eventsPath = path.join(__dirname,'events')
+const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'))
 
-client.on('messageCreate', async (message) => {
-    if(message.content === 'ping')
-    {
-        message.reply({
-            content: 'pong'
-        })
-    }
-    if(message.content.includes('fuck')){
-        message.reply({
-            content: 'That is not nice'
-        })
-    }
-    
-});
+for (const file of eventFiles) {
+	const filePath = path.join(eventsPath, file);
+	const event = require(filePath);
+	if (event.once) {
+		client.once(event.name, (...args) => event.execute(...args));
+	} else {
+		client.on(event.name, (...args) => event.execute(...args));
+	}
+}
 
-//Command Handling
+// Commands
 client.commands = new Collection();
+
 const commandsPath = path.join(__dirname, 'commands');
-const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('js'));
+const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
 
 for(const file of commandFiles){
     const filePath = path.join(commandsPath, file);
     const command = require(filePath);
-    //client.commands.set(command.data.name, command)
+    client.commands.set(command.data.name, command)
 }
 
-client.login(process.env.DISCORD_TOKEN);
+//const commandsToCheck = client.commands;
+
+// Dynamic Command Execution
+client.on('interactionCreate',async (interaction) => {
+
+    //Checks all the commands
+    const command = client.commands.get(interaction.commandName);
+
+    // if no command is found, exit function
+    if (!command) return;
+
+    try {
+        //Executing function
+        await command.execute(interaction);
+    } catch (error) {
+        console.error(error);
+        await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+    }
+})
+
+client.login(token);
