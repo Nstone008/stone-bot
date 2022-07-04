@@ -6,9 +6,6 @@ const { getCommandFiles } = require('./utils')
 require('./setup/setup-commands');
 dotenv.config();
 
-// Store for in-progress games. In production, you'd want to use a DB
-let activeGames = {};
-
 // Creating the client with its options(currently intents)
 const client = new Client({
     intents: [

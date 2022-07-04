@@ -1,47 +1,59 @@
 const { capitalize } = require('./utils.js'); 
+const { getRandomArbitrary } = require('./utils/random');
 
+// Store for in-progress games. In production, you'd want to use a DB
+let activeGames = {};
+
+let currentOpponentChoice = '';
 
 //-- Objects
 
 // this is just to figure out winner + verb
 const RPSChoices = {
   rock: {
+    name: 'rock',
     description: 'sedimentary, igneous, or perhaps even metamorphic',
     virus: 'outwaits',
     computer: 'smashes',
     scissors: 'crushes',
   },
   cowboy: {
+    name: 'cowboy',
     description: 'yeehaw~',
     scissors: 'puts away',
     wumpus: 'lassos',
     rock: 'steel-toe kicks',
   },
   scissors: {
+    name: 'scissors',
     description: 'careful ! sharp ! edges !!',
     paper: 'cuts',
     computer: 'cuts cord of',
     virus: 'cuts DNA of',
   },
   virus: {
+    name: 'virus',
     description: 'genetic mutation, malware, or something inbetween',
     cowboy: 'infects',
     computer: 'corrupts',
     wumpus: 'infects',
   },
   computer: {
+    name: 'computer',
     description: 'beep boop beep bzzrrhggggg',
     cowboy: 'overwhelms',
     paper: 'uninstalls firmware for',
     wumpus: 'deletes assets for',
   },
   wumpus: {
+    name: 'wumpus',
     description: 'the purple Discord fella',
     paper: 'draws picture on',
     rock: 'paints cute face on',
     scissors: 'admires own reflection in',
   },
   paper: {
+    name: 'paper',
     description: 'versatile and iconic',
     virus: 'ignores',
     cowboy: 'gives papercut to',
@@ -85,12 +97,19 @@ const formatResult = function (result) {
 }
 
 const getRPSChoices = function () {
-  return Object.keys(RPSChoices);
+
+  const keys = Object.keys(RPSChoices);
+
+  return keys;
 }
 
 const getRandomChoice = function () {
    //Need to figure out how to send the object 
-};
+   const allChoices = getRPSChoices();
+   const randChoice = allChoices.at(getRandomArbitrary(0,allChoices.length));
+
+   return randChoice;
+}
 
 // // Function to fetch shuffled options for select menu
 const getShuffledOptions = function () {
@@ -110,8 +129,18 @@ const getShuffledOptions = function () {
   return options.sort(() => Math.random() - 0.5);
 }
 
+const setOpponentChoice = function (choice) {
+  currentOpponentChoice = choice;
+}
+
+const getCurrentChoice = function () {
+  return currentOpponentChoice
+}
+
 module.exports = {
   getResult,
   getShuffledOptions,
-  getRandomChoice
+  getRandomChoice,
+  getCurrentChoice,
+  setOpponentChoice
 }

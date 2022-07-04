@@ -1,7 +1,6 @@
 const { MessageActionRow, MessageButton } = require('discord.js');
 const { getCommandFiles } = require('../utils');
-const { getResult, getRandomChoice, convertString } = require('../game')
-const wait = require('node:timers/promises').setTimeout;
+const { setOpponentChoice } = require('../game');
 
 // Currently this is the file that responds to interactions(Slash commands is the only version i know)
 
@@ -36,15 +35,23 @@ module.exports = {
                 const user = interaction.user;
                 const choice = interaction.values[0];
 
-                console.log(choice);
+                console.log(choice, ' choice set from challenge message.');
+                setOpponentChoice(choice);
 
-                const randomChoice = getRandomChoice();
+                interaction.reply('Selection Made, Thank you.')
 
-                console.log(randomChoice);
+                // const randomChoice = getRandomChoice();
 
-                await interaction.deferUpdate();
-                await wait(2000);                
-                await interaction.editReply({ content: `${user} chose: ${choice}`, components: [] });
+                // await interaction.deferUpdate();
+                // const gameResult = getResult({
+                //     id: user.id,
+                //     objectName: choice
+                // },{
+                //     id: 'Stone Bot',
+                //     objectName: randomChoice   
+                // })
+                // await wait(2000);                
+                // await interaction.editReply({ content: gameResult, components: [] });
             }
 
         }

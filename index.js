@@ -1,6 +1,6 @@
 const express = require('express');
 require('./bot');
-const { VerifyDiscordRequest } = require('./utils');
+const { VerifyDiscordRequest } = require('./utils/discord');
 const log = require('./temp/log')
 
 const app = express();
